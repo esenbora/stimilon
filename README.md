@@ -1,135 +1,123 @@
-# Turborepo starter
+# Stimilon
 
-This Turborepo starter is maintained by the Turborepo core team.
+**Penetration testing for LLM applications.**
 
-## Using this example
+Stimilon is an automated security testing platform that identifies vulnerabilities in LLM-powered applications. It simulates adversarial attacks—prompt injections, jailbreaks, and data extraction attempts—against any LLM API.
 
-Run the following command:
+## Features
 
-```sh
-npx create-turbo@latest
+- **23 Attack Tests**: 10 prompt injections, 8 jailbreaks, 5 data extraction probes
+- **Multi-Provider Support**: OpenAI and Anthropic APIs
+- **Severity Scoring**: Critical, High, Medium, Low classifications
+- **Remediation Guidance**: Specific fixes for each vulnerability
+- **PDF Reports**: Export comprehensive security reports
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- Python 3.9+
+- pnpm
+
+### Installation
+
+```bash
+# Clone and install dependencies
+pnpm install
+
+# Install Python dependencies
+cd apps/api
+pip install -r requirements.txt
+cd ../..
 ```
 
-## What's inside?
+### Development
 
-This Turborepo includes the following packages/apps:
+Start both frontend and backend:
 
-### Apps and Packages
+```bash
+# Terminal 1: Start frontend
+pnpm dev
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+# Terminal 2: Start backend
+cd apps/api
+uvicorn main:app --reload --port 8000
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+Open http://localhost:3000 in your browser.
+
+## Project Structure
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+stimilon/
+├── apps/
+│   ├── web/                 # Next.js 16 frontend
+│   │   ├── app/
+│   │   │   ├── page.tsx           # Landing page
+│   │   │   └── dashboard/         # Dashboard pages
+│   │   └── components/ui/         # UI components
+│   │
+│   └── api/                 # FastAPI backend
+│       ├── main.py
+│       ├── routers/              # API endpoints
+│       └── engine/
+│           ├── attacks/          # Attack library
+│           ├── connectors/       # LLM API connectors
+│           └── executor.py       # Scan executor
+│
+├── packages/
+│   └── ui/                  # Shared UI package
+│
+└── turbo.json
 ```
 
-### Develop
+## Attack Library
 
-To develop all apps and packages, run the following command:
+### Prompt Injection (10 tests)
+- Basic instruction override
+- System prompt extraction
+- Delimiter injection
+- Context switching
+- Markdown/code block escape
+- Multi-language injection
+- Unicode manipulation
+- Payload in metadata
+- Recursive injection
+- XML tag injection
 
-```
-cd my-turborepo
+### Jailbreaks (8 tests)
+- DAN (Do Anything Now)
+- Roleplay exploits
+- Hypothetical framing
+- Academic pretense
+- Base64 encoding bypass
+- Leetspeak bypass
+- Multi-turn escalation
+- Emotional manipulation
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+### Data Extraction (5 tests)
+- System prompt repetition
+- First message probe
+- Training data memorization
+- PII extraction
+- RAG content exposure
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+## Tech Stack
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+- **Frontend**: Next.js 16, TailwindCSS, TypeScript
+- **Backend**: Python, FastAPI, httpx
+- **Build**: Turborepo, pnpm
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+## API Endpoints
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/scans` | Create new security scan |
+| GET | `/api/scans/{id}` | Get scan details |
+| GET | `/api/scans` | List all scans |
+| GET | `/api/reports/{scan_id}/pdf` | Download PDF report |
 
-### Remote Caching
+## License
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+MIT
